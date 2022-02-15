@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        {% if title %}
-        <title>Flask Blog - {{title}}</title>
-        {% else %}
-            <title>Flask Blog</title>
-        {% endif %}
-    </head>
-    <body>
-        
-        <h1>About</h1>
-        <p>My first paragraph about about.</p>
-    </body>
-</html>
+<!-- Uses 'layout' page to format -->
+{% extends "layout.html" %}
+<!-- Added text content -->
+{% block content %}
+    <h1>About Page</h1>
+    <p>My paragraph is about about.</p>
+    <p>Using layout...</p>
+{% endblock content %}

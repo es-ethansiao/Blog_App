@@ -1,19 +1,10 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        {% if title %}
-        <title>Flask Blog - {{title}}</title>
-        {% else %}
-            <title>Flask Blog</title>
-        {% endif %}
-    </head>
-    <body>
-        
-        {% for post in posts %}
-            <h1>{{ post.title }}</h1>
-            <h3>By {{ post.author }} on {{ post.date_posted }}</h3>
-            <p>{{ post.content }}</p>
-        {% endfor %}
-
-    </body>
-</html>
+<!-- Uses 'layout' page to format webpage -->
+{% extends "layout.html" %}
+<!-- Added text using dictionaries and lists from python app -->
+{% block content %}
+    {% for post in posts %}
+        <h1>{{ post.title }}</h1>
+        <h3>By {{ post.author }} on {{ post.date_posted }}</h3>
+        <p>{{ post.content }}</p>
+    {% endfor %}
+{% endblock content %}

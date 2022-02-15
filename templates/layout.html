@@ -1,0 +1,18 @@
+<!-- Format for HTML webpages -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Title formatting for all webpages, shown on the tab.
+            If title parameter is sent from python app, it displays next to the "Flask Blog" text -->
+        {% if title %}
+        <title>Flask Blog - {{title}}</title>
+        <!-- Otherwise, just the name "Flask Blog" is displayed as the title -->
+        {% else %}
+            <title>Flask Blog</title>
+        {% endif %}
+    </head>
+    <body>
+        <!-- Block code allows different content to be added in other HTML files -->
+        {% block content %}{% endblock %}
+    </body>
+</html>
