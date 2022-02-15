@@ -1,5 +1,7 @@
 from flask import Flask, render_template
 
+# ==================== LISTS AND DICTIONARIES OF BLOG POSTS ====================
+# Blog posts send titles, authors, content, and date posted to homepage
 posts = [
     
     {
@@ -34,14 +36,17 @@ posts = [
 
 app = Flask(__name__)
 
+# Routes for main/home page
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html', posts=posts)
+    return render_template('home.html', posts=posts) # sends in parameter for blog posts
 
+# Route for about page
 @app.route("/about")
 def about():
-    return render_template('about.html') 
+    return render_template('about.html', title='About') # sends in parameter for title of the webpage
 
+# Allows main app to run the web server
 if __name__=='__main__':
     app.run(debug=True)
