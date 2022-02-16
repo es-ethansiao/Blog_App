@@ -1,0 +1,98 @@
+/* Styling settings for all content within body */
+body {
+    background: #fafafa;
+    color: #333333;
+    margin-top: 5rem;
+}
+
+/* Styling settings for headings grouped together maintain consistency for all headings (for HTML tags only) */
+h1, h2, h3, h4, h5, h6 {
+    color: #444444;
+}
+
+/* Navbar background settings */
+/* NOTE: settings with dots at the beginning represent classes (shown in HTML files) */
+.bg-steel {
+    background-color: #5f788a;
+}
+
+/*  */
+/* NOTE: classes using the same settings should NOT be separated by commas */
+.site-header .navbar-nav .nav-link {
+    color: #cbd5db;
+}
+
+/*  */
+.site-header .navbar-nav .nav-link:hover {
+    color: #ffffff;
+}
+
+/*  */
+.site-header .navbar-nav .nav-link.active {
+    font-weight: 500;
+}
+
+/*  */
+.content-section {
+    background: #ffffff;
+    padding: 10px 20px;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+}
+
+/*  */
+.article-title {
+    color: #444444;
+}
+
+/*  */
+a.article-title:hover {
+    color: #428bca;
+    text-decoration: none;
+}
+
+/* Blog art */
+.article-content {
+    white-space: pre-line;
+}
+
+/* Settings for images present, formatting them to be square-shaped and moved a bit from the right */
+.article-img {
+    height: 65px;
+    width: 65px;
+    margin-right: 16px;
+}
+
+/*  */
+.article-metadata {
+    padding-bottom: 1px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #e3e3e3
+}
+   
+/*  */ 
+.article-metadata a:hover {
+    color: #333;
+    text-decoration: none;
+}
+    
+/*  */
+.article-svg {
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+}
+
+/*  */
+.account-img {
+    height: 125px;
+    width: 125px;
+    margin-right: 20px;
+    margin-bottom: 16px;
+}
+
+/*  */
+.account-heading {
+    font-size: 2.5rem;
+}
