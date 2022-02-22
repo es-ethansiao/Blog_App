@@ -1,14 +1,13 @@
 # ==================== BLOGGING APP allows users to view and post blogs with an account ====================
 
-# Importing templates from flask installed on device
-from flask import Flask, render_template, url_for
+# This is a blog app the allows users to register and post blogs
 
-# Importing forms from forms python file
+from flask import Flask, render_template, url_for, flash, redirect
 from forms import RegistrationForm, LoginForm
+
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'fe8232dd0a2b9a7760b5978790a9884e'
-
+app.config['SECRET_KEY'] = "695f4d33049851be2b077d9ffe1d8cf2"
 
 # ==================== LISTS AND DICTIONARIES OF BLOG POSTS ====================
 # Blog posts send titles, authors, content, and date posted to homepage
@@ -43,8 +42,6 @@ posts = [
     },
     
 ]
-
-app = Flask(__name__)
 
 # Routes for main/home page
 @app.route("/")
