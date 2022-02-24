@@ -59,7 +59,7 @@ def about():
 def register():
     form = RegistrationForm() # sets form to registration form from the forms python file
     if form.validate_on_submit(): # allows the form to validate upon submission
-        flash(f'Account Created for {form.username.data}!', 'success') # Flash imported from flask reveals message with username data in it, formatted as success
+        flash(f'Account Created for {form.username.data}!', 'success') # Flash imported from flask displays temporary message
         return redirect(url_for('home')) # redirects user to the homepage
     return render_template('register.html', title='Register', form=form) # form=form creates a form which is set as above
 
