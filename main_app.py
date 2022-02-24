@@ -55,9 +55,12 @@ def about():
     return render_template('about.html', title='About') # sends in parameter for title of the webpage
 
 # Route for registration page
-@app.route("/register")
+@app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm() # sets form to registration form from the forms python file
+    if form.validate_on_submit(): # allows the form to validate upon submission
+        flash(f'Account Created for {form.username.data}!', 'success') # Flash imported from flask reveals message with username data in it, formatted as success
+        return redirect(url_for('home')) # redirects user to the homepage
     return render_template('register.html', title='Register', form=form) # form=form creates a form which is set as above
 
 # Route for login page
