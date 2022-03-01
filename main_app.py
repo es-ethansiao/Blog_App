@@ -64,9 +64,15 @@ def register():
     return render_template('register.html', title='Register', form=form) # form=form creates a form which is set as above
 
 # Route for login page
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
-    form = LoginForm() # sets form to login form from the forms python file
+    form = LoginForm() # sets form to login form from the forms python file'
+    if form.validate_on_submit(): # allows the form to validate upon submission
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password': # Ensures below tasks are only done if email/pass combination is correct
+            flash('You have been logged in!', 'success') # Flash imported from flask displays successful login
+            return redirect(url_for('home')) # Redirects user to homepage
+        else:
+            flash('Invalid email or password.', 'danger')
     return render_template('login.html', title='Login', form=form) # form=form creates a form which is set as above
 
 # Allows main app to run the web server
