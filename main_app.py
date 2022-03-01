@@ -3,11 +3,23 @@
 # This is a blog app the allows users to register and post blogs
 
 from flask import Flask, render_template, url_for, flash, redirect
+from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, LoginForm
 
 app = Flask(__name__)
 
+# Secret key required to encrypt user passwords and input
 app.config['SECRET_KEY'] = "695f4d33049851be2b077d9ffe1d8cf2"
+
+# SQLAlchemy configuration for database that passes argument called app (as mentioned above)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' # 3 /'s for route redirectory
+db = SQLAlchemy(app)
+
+# ==================== CLASSES (DATABASE TABLES) AND COLUMNS FROM DATABASE ====================
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
 
 # ==================== LISTS AND DICTIONARIES OF BLOG POSTS ====================
 # Blog posts send titles, authors, content, and date posted to homepage
