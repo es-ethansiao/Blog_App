@@ -2,6 +2,7 @@
 
 # This is a blog app the allows users to register and post blogs
 
+from datetime import datetime
 from flask import Flask, render_template, url_for, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, LoginForm
@@ -16,10 +17,28 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' # 3 /'s for route re
 db = SQLAlchemy(app)
 
 # ==================== CLASSES (DATABASE TABLES) AND COLUMNS FROM DATABASE ====================
+# Database class for user details
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True) 
+    username = db.Column(db.String(20), unique=True, nullable=False) # false null makes some sort of imput compulsory
     email = db.Column(db.String(120), unique=True, nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg') # default profile picture is set if there's nothing
+    password = db.Column(db.String(60), nullable=False)
+    posts = db.relationship('Post', backref='author', lasy=True) # backref creates author, while lasy loads info from database when needed
+    
+    def __repr__(self):
+        return f"User('{self.username}', '{self.email}', '{self.image_file}')" # returns user class
+
+# Database class for blog post details
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) # imported from datetime, sets date and time of post to that instant
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    def __repr__(self):
+        return f"Post('{self.title}', '{self.date_posted}')" # returns post class
 
 # ==================== LISTS AND DICTIONARIES OF BLOG POSTS ====================
 # Blog posts send titles, authors, content, and date posted to homepage
