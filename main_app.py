@@ -24,7 +24,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg') # default profile picture is set if there's nothing
     password = db.Column(db.String(60), nullable=False)
-    posts = db.relationship('Post', backref='author', lasy=True) # backref creates author, while lasy loads info from database when needed
+    posts = db.relationship('Post', backref='author', lazy=True) # backref creates author, while lasy loads info from database when needed
     
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')" # returns user class
