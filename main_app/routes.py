@@ -1,44 +1,7 @@
-# ==================== BLOGGING APP allows users to view and post blogs with an account ====================
-
-# This is a blog app the allows users to register and post blogs
-
-from datetime import datetime
-from flask import Flask, render_template, url_for, flash, redirect
-from flask_sqlalchemy import SQLAlchemy
-from forms import RegistrationForm, LoginForm
-
-app = Flask(__name__)
-
-# Secret key required to encrypt user passwords and input
-app.config['SECRET_KEY'] = "695f4d33049851be2b077d9ffe1d8cf2"
-
-# SQLAlchemy configuration for database that passes argument called app (as mentioned above)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' # 3 /'s for route redirectory
-db = SQLAlchemy(app)
-
-# ==================== CLASSES (DATABASE TABLES) AND COLUMNS FROM DATABASE ====================
-# Database class for user details
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True) 
-    username = db.Column(db.String(20), unique=True, nullable=False) # false null makes some sort of imput compulsory
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(20), nullable=False, default='default.jpg') # default profile picture is set if there's nothing
-    password = db.Column(db.String(60), nullable=False)
-    posts = db.relationship('Post', backref='author', lazy=True) # relationship (two way) pulls out information from User or Post class
-    
-    def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.image_file}')" # returns user class
-
-# Database class for blog post details
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) # imported from datetime, sets date and time of post to that instant
-    content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    
-    def __repr__(self):
-        return f"Post('{self.title}', '{self.date_posted}')" # returns post class
+from flask import render_template, url_for, flash, redirect
+from main_app import app
+from main_app.forms import RegistrationForm, LoginForm
+from main_app.models import User, Post
 
 # ==================== LISTS AND DICTIONARIES OF BLOG POSTS ====================
 # Blog posts send titles, authors, content, and date posted to homepage
@@ -105,7 +68,3 @@ def login():
         else:
             flash('Invalid email or password.', 'danger')
     return render_template('login.html', title='Login', form=form) # form=form creates a form which is set as above
-
-# Allows main app to run the web server
-if __name__=='__main__':
-    app.run(debug=True)
