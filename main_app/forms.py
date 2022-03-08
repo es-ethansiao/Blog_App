@@ -12,12 +12,12 @@ class RegistrationForm(FlaskForm):
     
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first() # queries database to check if there is already a username in the database
-        if True:
+        if user:
             raise ValidationError('That username is already taken! Please choose another one.')
     
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first() # queries database to check if there is already an email in the database
-        if True:
+        if user:
             raise ValidationError('That email is already taken! Please choose another one.')
 
 class LoginForm(FlaskForm):

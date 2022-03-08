@@ -2,6 +2,7 @@ from flask import render_template, url_for, flash, redirect
 from main_app import app, db, bcrypt
 from main_app.forms import RegistrationForm, LoginForm
 from main_app.models import User, Post
+from flask_login import login_user, current_user, logout_user
 
 # ==================== LISTS AND DICTIONARIES OF BLOG POSTS ====================
 # Blog posts send titles, authors, content, and date posted to homepage
@@ -51,6 +52,8 @@ def about():
 # Route for registration page
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated: # redirects current user logged in to the home page
+        return redirect(url_for('home'))
     form = RegistrationForm() # sets form to registration form from the forms python file
     if form.validate_on_submit(): # allows the form to validate upon submission
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') # takes password from form and hashes it into utf to put into the database
@@ -64,11 +67,20 @@ def register():
 # Route for login page
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = LoginForm() # sets form to login form from the forms python file'
     if form.validate_on_submit(): # allows the form to validate upon submission
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password': # Ensures below tasks are only done if email/pass combination is correct
-            flash('You have been logged in!', 'success') # Flash imported from flask displays successful login
-            return redirect(url_for('home')) # Redirects user to homepage
+        user = User.query.filter_by(email=form.email.data).first() # query checks database for first email
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            return redirect(url_for('home'))
         else:
             flash('Invalid email or password.', 'danger')
     return render_template('login.html', title='Login', form=form) # form=form creates a form which is set as above
+
+# Route for log out page
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
