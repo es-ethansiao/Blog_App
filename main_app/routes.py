@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request
 from main_app import app, db, bcrypt
-from main_app.forms import RegistrationForm, LoginForm
+from main_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from main_app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -56,11 +56,13 @@ def register():
         return redirect(url_for('home'))
     form = RegistrationForm() # sets form to registration form from the forms python file
     if form.validate_on_submit(): # allows the form to validate upon submission
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') # takes password from form and hashes it into utf to put into the database
+        # takes password from form and hashes it into utf to put into the database
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') 
         user = User(username=form.username.data, email=form.email.data, password=hashed_password) # takes data from form for a user
         db.session.add(user) # adds user information to database
         db.session.commit() # commits changes to database
-        flash('Your account has been successfully created! You are now able to log in!', 'success') # Flash imported from flask displays temporary message
+        # Flash imported from flask displays temporary message informing the user that the new account has been created
+        flash('Your account has been successfully created! You are now able to log in!', 'success') 
         return redirect(url_for('login')) # redirects user to the homepage
     return render_template('register.html', title='Register', form=form) # form=form creates a form which is set as above
 
@@ -69,13 +71,14 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
-    form = LoginForm() # sets form to login form from the forms python file'
+    form = LoginForm() # sets form to login form from the forms python file
     if form.validate_on_submit(): # allows the form to validate upon submission
         user = User.query.filter_by(email=form.email.data).first() # query checks database for first email
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('home')) # logging in after attempting to access account page will redirect to account page, otherwise, user is redirected to homepage
+            # logging in after attempting to access account page will redirect to account page, otherwise, user is redirected to homepage
+            return redirect(next_page) if next_page else redirect(url_for('home')) 
         else:
             flash('Invalid email or password.', 'danger')
     return render_template('login.html', title='Login', form=form) # form=form creates a form which is set as above
@@ -87,7 +90,24 @@ def logout():
     return redirect(url_for('home'))
 
 # Route for account details page
-@app.route("/account")
+@app.route("/account", methods=['GET', 'POST'])
 @login_required # user needs to be logged in to access this page
 def account():
-    return render_template('account.html', title='Account Details')
+    form = UpdateAccountForm() # sets form to update details form from the forms python file
+    if form.validate_on_submit(): # allows the form to validate upon submission
+        # changes current username to what's filled in the form
+        current_user.username = form.username.data
+        # changes current email to what's filled in the form
+        current_user.email = form.email.data
+        db.session.commit()
+        # Flash imported from flask displays temporary message informing the user that the datails have been updated
+        flash('Your account has been updated!', 'success')
+        # Redirects user to the same page
+        return redirect(url_for('account'))
+    # GET gets (literally) something out of the database
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+    # image file goes into static folder and grabs jpg image file in profile pics folder which has been set up in the database
+    image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+    return render_template('account.html', title='Account Details', image_file=image_file, form=form)
