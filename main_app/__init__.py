@@ -13,5 +13,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' # 3 /'s for route re
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+login_manager.login_view = 'login' # redirects user to login page if the user isn't logged in
+login_manager.login_message_category = 'info' # displays message in a neat colour category
+
 
 from main_app import routes

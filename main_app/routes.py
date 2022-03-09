@@ -1,8 +1,8 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from main_app import app, db, bcrypt
 from main_app.forms import RegistrationForm, LoginForm
 from main_app.models import User, Post
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 
 # ==================== LISTS AND DICTIONARIES OF BLOG POSTS ====================
 # Blog posts send titles, authors, content, and date posted to homepage
@@ -74,7 +74,8 @@ def login():
         user = User.query.filter_by(email=form.email.data).first() # query checks database for first email
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            return redirect(url_for('home'))
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home')) # logging in after attempting to access account page will redirect to account page, otherwise, user is redirected to homepage
         else:
             flash('Invalid email or password.', 'danger')
     return render_template('login.html', title='Login', form=form) # form=form creates a form which is set as above
@@ -84,3 +85,9 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+# Route for account details page
+@app.route("/account")
+@login_required # user needs to be logged in to access this page
+def account():
+    return render_template('account.html', title='Account Details')
