@@ -1,3 +1,5 @@
+import os
+import secrets
 from flask import render_template, url_for, flash, redirect, request
 from main_app import app, db, bcrypt
 from main_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
@@ -89,12 +91,31 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+# Function for picture pathway and saving
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    # takes filename and extension and splits text
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    # takes full path of the blog app folder
+    picture_path = os.path.join(app.root_path,'static/profile_pics', picture_fn)
+    # saves profile pic into pathway
+    form_picture.save(picture_path)
+    
+    # returns picture file name
+    return picture_fn
+
 # Route for account details page
 @app.route("/account", methods=['GET', 'POST'])
 @login_required # user needs to be logged in to access this page
 def account():
     form = UpdateAccountForm() # sets form to update details form from the forms python file
     if form.validate_on_submit(): # allows the form to validate upon submission
+        if form.picture.data:
+            # uses function to save new profile picture into folder pathway
+            picture_file = save_picture(form.picture.data)
+            # changes current username to what's filled in the form
+            current_user.image_file = picture_file
         # changes current username to what's filled in the form
         current_user.username = form.username.data
         # changes current email to what's filled in the form

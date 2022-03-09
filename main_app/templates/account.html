@@ -11,7 +11,7 @@
             </div>
         </div>
         <!-- FORM HERE -->
-        <form method="POST" action="">
+        <form method="POST" action="" enctype="multipart/form-data"> <!-- sets up file in code -->
             {{ form.hidden_tag() }}
 
             <!-- FORM FOR REGISTRATION PAGE -->
@@ -46,6 +46,16 @@
                     {% endif %}
                 </div>
 
+                <div class="form-group">
+                    {{ form.picture.label() }}
+                    {{ form.picture(class="form-control-file") }}
+                    {% if form.picture.errors %}
+                        {% for error in form.picture.errors %}
+                            <span class="text-danger">{{ error }}</span></br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
                 </fieldset>
 
                 <!-- Button submits details to database for future use (logging in) -->
