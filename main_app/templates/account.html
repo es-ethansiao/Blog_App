@@ -1,17 +1,19 @@
+<!-- Use double curly brackets for fields/form coding, and single curly brackets with percent symbols for Python commands -->
+
 <!-- Uses 'layout' page to format -->
 {% extends "layout.html" %}
 <!-- Added text content -->
 {% block content %}
     <div class="content-section">
         <div class="media">
-            <img class="rounded-circle account-ing" src="{{ image_file }}">
+            <img class="rounded-circle account-img" src="{{ image_file }}">
             <div class="media-body">
                 <h2 class="account-heading">{{ current_user.username }}</h2>
                 <p class="text-secondary">{{ current_user.email }}</p>
             </div>
         </div>
         <!-- FORM HERE -->
-        <form method="POST" action="" enctype="multipart/form-data"> <!-- sets up file in code -->
+        <form method="POST" action="" enctype="multipart/form-data"> <!-- encode sets up file in code -->
             {{ form.hidden_tag() }}
 
             <!-- FORM FOR REGISTRATION PAGE -->
@@ -51,6 +53,7 @@
                     {{ form.picture(class="form-control-file") }}
                     {% if form.picture.errors %}
                         {% for error in form.picture.errors %}
+                            <!-- Uses Bootstrap class text to print error in a red colour. -->
                             <span class="text-danger">{{ error }}</span></br>
                         {% endfor %}
                     {% endif %}
