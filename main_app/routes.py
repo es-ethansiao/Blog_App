@@ -3,7 +3,7 @@ import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request
 from main_app import app, db, bcrypt
-from main_app.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from main_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from main_app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -138,3 +138,15 @@ def account():
     # image file goes into static folder and grabs jpg image file in profile pics folder which has been set up in the database
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account Details', image_file=image_file, form=form)
+
+# Route for creating new posts
+@app.route("/post/new", methods=['GET', 'POST'])
+@login_required # user needs to be logged in to access this page
+def new_post():
+    # this form variable takes the post form that is imported from the forms Python file for the page
+    form = PostForm()
+    if form.validate_on_submit(): # allows the form to validate upon submission
+        # flash message informs user of successful post while redirecting them to home page
+        flash('Your post has been created!', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', title='New Post', form=form)
