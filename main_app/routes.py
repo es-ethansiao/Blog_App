@@ -7,44 +7,14 @@ from main_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostF
 from main_app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
-# ==================== LISTS AND DICTIONARIES OF BLOG POSTS ====================
-# Blog posts send titles, authors, content, and date posted to homepage
-posts = [
-    
-    {
-        'author': 'Kimi Realon',
-        'title': 'Blog Post 1',
-        'content': 'This is my first post on this sh!tty blog app :D. HAHAHA I posted before @Ethan Siao',
-        'date_posted': 'February 13, 2022'        
-    },
-    
-    {
-        'author': 'Ethan Siao',
-        'title': 'Blog Post 2',
-        'content': 'This is my first post on this sh!tty blog app :D F*ck you @Kimi Realon',
-        'date_posted': 'February 14, 2022'        
-    },
-    
-    {
-        'author': 'Micro Ramos',
-        'title': 'Blog Post 3',
-        'content': 'This is my first post on this sh!tty blog app :D. NIGGER NIGGER NIGGER NIGGERS',
-        'date_posted': 'February 14, 2022'        
-    },
-    
-    {
-        'author': 'Milan Taylor',
-        'title': 'Blog Post 4',
-        'content': 'This is my first post on this sh!tty blog app :D. fuck bitches get money',
-        'date_posted': 'February 14, 2022'        
-    },
-    
-]
+# ==================== ROUTES ====================
 
 # Routes for main/home page
 @app.route("/")
 @app.route("/home")
 def home():
+    # grabs all posts from database
+    posts = Post.query.all()
     return render_template('home.html', posts=posts) # sends in parameter for blog posts
 
 # Route for about page
@@ -146,6 +116,11 @@ def new_post():
     # this form variable takes the post form that is imported from the forms Python file for the page
     form = PostForm()
     if form.validate_on_submit(): # allows the form to validate upon submission
+        # sets post variable with inputted title, content, and logged-in user
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        # adds post variable and saves it to database
+        db.session.add(post)
+        db.session.commit()
         # flash message informs user of successful post while redirecting them to home page
         flash('Your post has been created!', 'success')
         return redirect(url_for('home'))
