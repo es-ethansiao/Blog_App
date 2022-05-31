@@ -1,7 +1,7 @@
 import os
 import secrets
 from PIL import Image
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort
 from main_app import app, db, bcrypt
 from main_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from main_app.models import User, Post
@@ -124,4 +124,30 @@ def new_post():
         # flash message informs user of successful post while redirecting them to home page
         flash('Your post has been created!', 'success')
         return redirect(url_for('home'))
-    return render_template('create_post.html', title='New Post', form=form)
+    return render_template('create_post.html', title='New Post', form=form, legend='New Post')
+
+# Route for individual posts
+@app.route("/post/<int:post_id>") # integer for post id is unique for all posts
+def post(post_id):
+    post = Post.query.get_or_404(post_id) # get_or_404 either grabs post id or if none found, displays 404 error
+    return render_template('post.html', title=post.title, post=post)
+
+# Route for updating and deleting posts
+@app.route("/post/<int:post_id>/update", methods=['GET', 'POST']) # integer for post id is unique for all posts
+@login_required # user needs to be logged in to access this page
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id) # get_or_404 either grabs post id or if none found, displays 404 error
+    if post.author != current_user:
+        abort(403) # 403 error restricts access to posts that don't belong to the user [FORBIDDEN AHHHHHHHHH]
+    form = PostForm()
+    if form.validate_on_submit(): # form updates upon validation and returns to individual post view
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        # flash message informs user of successful post while redirecting them to individual post page
+        flash('Your post has been updated!', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    elif request.method == 'GET': # form pre-populates with existing data
+        form.title.data = post.title
+        form.content.data = post.content
+    return render_template('create_post.html', title='Update Post', form=form, legend='Update Post')

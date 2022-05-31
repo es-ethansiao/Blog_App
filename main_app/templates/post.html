@@ -1,0 +1,24 @@
+<!-- Uses 'layout' page to format webpage -->
+{% extends "layout.html" %}
+<!-- Added text using dictionaries and lists from python app -->
+{% block content %}
+    <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+        <div class="media-body">
+            <div class="article-metadata">
+                <!-- Allows users to click on author and post to go to author profile or expand on post -->
+                <a class-"mr-2" href="#"> {{ post.author.username }} </a>
+                <small class="text-muted"> {{ post.date_posted.strftime('%d-%m-%Y') }} </small>
+                {% if post.author == current_user %}
+                    <div>
+                        <!-- small secondary classed button has a margin of 1 and redirects user to update post page -->
+                        <a class="btn btn-secondary btn-small m-1" href="{{ url_for('update_post', post_id=post.id) }}">Update</a> 
+                    </div>
+                {% endif %}
+            </div>
+            <!-- Displays post information in headings and paragraph text -->
+            <h2 class="article-title"> {{ post.title }} </h2>
+            <p class="article-content"> {{ post.content }} </p>
+        </div>
+    </article>
+{% endblock content %}
