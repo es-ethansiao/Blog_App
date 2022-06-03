@@ -132,7 +132,7 @@ def post(post_id):
     post = Post.query.get_or_404(post_id) # get_or_404 either grabs post id or if none found, displays 404 error
     return render_template('post.html', title=post.title, post=post)
 
-# Route for updating and deleting posts
+# Route for updating posts
 @app.route("/post/<int:post_id>/update", methods=['GET', 'POST']) # integer for post id is unique for all posts
 @login_required # user needs to be logged in to access this page
 def update_post(post_id):
@@ -151,3 +151,16 @@ def update_post(post_id):
         form.title.data = post.title
         form.content.data = post.content
     return render_template('create_post.html', title='Update Post', form=form, legend='Update Post')
+
+# Route for deleting posts
+@app.route("/post/<int:post_id>/delete", methods=['POST']) # integer for post id is unique for all posts
+@login_required # user needs to be logged in to access this page
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id) # get_or_404 either grabs post id or if none found, displays 404 error
+    if post.author != current_user:
+        abort(403) # 403 error restricts access to posts that don't belong to the user [FORBIDDEN AHHHHHHHHH]
+    db.session.delete(post) # now we proceed to the deleting of the post from the database
+    db.session.commit()
+    # flash message informs user of successful deletion while redirecting them to home page
+    flash('Your post has been deleted!', 'success')
+    return redirect(url_for('home'))
