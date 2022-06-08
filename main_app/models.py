@@ -1,5 +1,6 @@
 from datetime import datetime
-from main_app import db, login_manager
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from main_app import db, login_manager, app
 from flask_login import UserMixin
 
 # ==================== CLASSES (DATABASE TABLES) AND COLUMNS FROM DATABASE ====================
@@ -16,6 +17,22 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg') # default profile picture is set if there's nothing
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True) # relationship (two way) pulls out information from User or Post class
+    
+    def get_reset_token(self, expires_sec=1800): # reset token expires in 30 mins (default value set up for below)
+        s = Serializer(app.config['SECRET_KEY'], expires_sec) # variable s sets up serializer and secret key from init
+        # returning of s dumps into a token and the payload is within dumps and decoded into utf-8
+        return s.dumps({'user.id': self.id}).decode('utf-8')
+    
+    @staticmethod # doesn't change and makes sure function doesn't expect 'self'
+    def verify_reset_token(token): # verifying reset token when it has been used
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id'] # loads token to see if user_id is obtained
+        except:
+            # if token doesn't exist, invalid, or time has run out, return none (nothing happens)
+            return None
+        # if token is verified, enter database to get user_id
+        return User.query.get(user_id)
     
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')" # returns user class
