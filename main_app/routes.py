@@ -13,8 +13,10 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/")
 @app.route("/home")
 def home():
+    page = request.args.get('page', 1, type=int) # page is a request from the database to go to the first page
     # grabs all posts from database
-    posts = Post.query.all()
+    # queries posts from db while paginate allows us to split things into pages with 5 blog posts for each page
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     return render_template('home.html', posts=posts) # sends in parameter for blog posts
 
 # Route for about page
