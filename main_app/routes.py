@@ -3,7 +3,9 @@ import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort
 from main_app import app, db, bcrypt
-from main_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
+from main_app.forms import (RegistrationForm, LoginForm, UpdateAccountForm, 
+                            PostForm, 
+                            RequestResetForm, ResetPasswordForm)
 from main_app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -39,7 +41,7 @@ def register():
         # Flash imported from flask displays temporary message informing the user that the new account has been created
         flash('Your account has been successfully created! You are now able to log in!', 'success') 
         return redirect(url_for('login')) # redirects user to the homepage
-    return render_template('register.html', title='Register', form=form) # form=form creates a form which is set as above
+    return render_template('register.html', title='Register', form=form, legend='Join Today') # form=form creates a form which is set as above
 
 # Route for login page
 @app.route("/login", methods=['GET', 'POST'])
@@ -56,7 +58,7 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('home')) 
         else:
             flash('Invalid email or password.', 'danger')
-    return render_template('login.html', title='Login', form=form) # form=form creates a form which is set as above
+    return render_template('login.html', title='Login', form=form, legend='Log In') # form=form creates a form which is set as above
 
 # Route for log out page
 @app.route("/logout")
@@ -109,7 +111,7 @@ def account():
         form.email.data = current_user.email
     # image file goes into static folder and grabs jpg image file in profile pics folder which has been set up in the database
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-    return render_template('account.html', title='Account Details', image_file=image_file, form=form)
+    return render_template('account.html', title='Account Details', image_file=image_file, form=form, legend='Account Details')
 
 # Route for creating new posts
 @app.route("/post/new", methods=['GET', 'POST'])
@@ -166,3 +168,24 @@ def delete_post(post_id):
     # flash message informs user of successful deletion while redirecting them to home page
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('home'))
+
+# Route for reset request page
+@app.route("/reset_password", methods=['GET', 'POST'])
+def reset_request():
+    if current_user.is_authenticated: # user must be logged out to change their password
+        return redirect(url_for('home'))
+    form = RequestResetForm()
+    return render_template('reset_request.html', title='Reset Password', form=form, legend='Reset Password')
+
+# Route for reset password page
+@app.route("/reset_password/<token>", methods=['GET', 'POST']) # brings in token sent to email address as link
+def reset_token(token):
+    if current_user.is_authenticated: # user must be logged out to change their password
+        return redirect(url_for('home'))
+    user = User.verify_reset_token(token) # taken and verified from models file
+    if user is None: # if token doesn't exist or the timer runs out
+        # flashes warning message and redirects user back to reset request page
+        flash('That is an invalid or expired token.', 'warning')
+        return redirect(url_for('reset_request'))
+    form = ResetPasswordForm
+    return render_template('reset_token.html', title='Reset Password', form=form, legend='Reset Password')
