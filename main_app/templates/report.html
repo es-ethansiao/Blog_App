@@ -1,25 +1,25 @@
-<!-- Uses 'layout' page to format webpage -->
+<!-- Uses 'layout' page to format -->
 {% extends "layout.html" %}
 {% block content %}
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
 
-            <!-- FORM FOR REGISTRATION PAGE -->
+            <!-- FORM FOR PRIVATE REPORT -->
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Join Today</legend> <!-- Sets title as legend within form -->
-
+                <legend class="border-bottom mb-4">{{ legend }}</legend> <!-- Sets title as legend within form -->
+                <p>Need to report something? Fill out the form below to send us a message and we will get back to you as soon as possible!</p>
                 <div class="form-group">
-                    {{ form.username.label(class="form-control-label") }}
-                        {% if form.username.errors %}
-                        {{ form.username(class="form-control form-control-lg is-invalid") }} 
+                    {{ form.name.label(class="form-control-label") }}
+                        {% if form.name.errors %}
+                        {{ form.name(class="form-control form-control-lg is-invalid") }} 
                         <div class="invalid-feedback">
-                            {% for error in form.username.errors %}
+                            {% for error in form.name.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                         {% else %}
-                        {{ form.username(class="form-control form-control-lg") }}
+                        {{ form.name(class="form-control form-control-lg") }}
                         {% endif %}                    
                 </div>
 
@@ -38,45 +38,39 @@
                 </div>
 
                 <div class="form-group">
-                    {{ form.password.label(class="form-control-label") }}
-                    {% if form.password.errors %}
-                    {{ form.password(class="form-control form-control-lg is-invalid") }} 
+                    {{ form.sportteam.label(class="form-control-label") }}
+                    {% if form.sportteam.errors %}
+                    {{ form.sportteam(class="form-control form-control-lg is-invalid") }} 
                     <div class="invalid-feedback">
-                        {% for error in form.password.errors %}
+                        {% for error in form.sportteam.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.password(class="form-control form-control-lg") }}
+                    {{ form.sportteam(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
 
                 <div class="form-group">
-                    {{ form.confirm_password.label(class="form-control-label") }}
-                    {% if form.confirm_password.errors %}
-                    {{ form.confirm_password(class="form-control form-control-lg is-invalid") }} 
+                    {{ form.details.label(class="form-control-label") }}
+                    {% if form.details.errors %}
+                    {{ form.details(class="form-control form-control-lg is-invalid") }} 
                     <div class="invalid-feedback">
-                        {% for error in form.confirm_password.errors %}
+                        {% for error in form.details.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.confirm_password(class="form-control form-control-lg") }}
+                    {{ form.details(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
 
-             </fieldset>
+            </fieldset>
 
-             <!-- Button submits details to database for future use (logging in) -->
-             <div class="form-group">
+            <!-- Button submits details to database for future use (logging in) -->
+            <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
-             </div>
+            </div>
         </form>
-    </div>
-    <div class"border-top pt-3">
-        <!-- Redirects user to login page if they already have an account -->
-        <small class="text-muted">
-            Already Have An Account? <a class="ml-2" href="{{ url_for('login')}}"> Sign In </a>
-        </small>
     </div>
 {% endblock content %}
