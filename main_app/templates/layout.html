@@ -13,10 +13,10 @@
 
         <!-- Title formatting for all webpages, shown on the tab If title parameter is sent from python app, it displays next to the "Flask Blog" text -->
         {% if title %}
-        <title>Flask Blog - {{title}}</title>
+        <title>Sancta Sport - {{title}}</title>
         <!-- Otherwise, just the name "Flask Blog" is displayed as the title -->
         {% else %}
-            <title>Flask Blog</title>
+            <title>Sancta Sport</title>
         {% endif %}
     </head>
 
@@ -24,16 +24,17 @@
         <!-- Navigation bar modifications all under header -->
         <header class="site-header">
             <!-- Navbar coded to expand when screen size is large enough (medium-sized) and will have white text, grey-black background and stays at the top of the screen -->
-            <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+                <img class="rounded-circle article-img" href="/" src="{{ url_for('static', filename='images/default.jpg') }}"
                 <div class="container">
-                    <a class="navbar-brand mr-4" href="/">Flask Blog</a>
+                    <a class="navbar-brand mr-4" href="/">Sancta Sport</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarToggle">
                         <div class="navbar-nav mr-auto">
                             <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
-                            <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>
+                            <a class="nav-item nav-link" href="https://www.sanctamaria.school.nz/sport/">About</a>
                         </div>
                         <!-- Navbar Right Side -->
                         <div class="navbar-nav">
@@ -51,7 +52,6 @@
                 </div>
             </nav>
         </header>
-        
         <!-- Div tag with container pulls content away from the very edge and creates a margin -->
         <main role="main" class="container">
             <div class="row">
@@ -72,16 +72,14 @@
                 <!-- Column remains the same size -->
                 <div class="col-md-4">
                     <div class="content-selection">
-                        <h3>Our Sidebar</h3>
+                        <h3>Upcoming Schedule: 03/11/2022</h3>
                         <!-- List acts as a secondary navbar -->
-                        <p class='text-muted'>You can put here the information you like.
+                        <p class='text-muted'>
                             <ul class="list-group">
-                                <li class="list-group-item list-group-item-light">Latest Posts</li>
-                                <li class="list-group-item list-group-item-light">Announcements</li>
-                                <li class="list-group-item list-group-item-light">Calendars</li>
-                                <li class="list-group-item list-group-item-light">etc.</li>
+                                <li class="list-group-item list-group-item-light">Junior Boys Volleyball Gold vs SEH and HWK from 6:15pm at Pulman</li>
+                                <li class="list-group-item list-group-item-light">Junior Boys Volleyball Navy vs BOT and PK2 from 4:00pm at Macleans</li>
+                                <li class="list-group-item list-group-item-light">Junior Girls Volleuball Sky vs EDG and MC2 from 4:45 at Sancta</li>
                             </ul>
-
                         </p>
                     </div>
                 </div>

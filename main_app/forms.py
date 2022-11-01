@@ -62,3 +62,19 @@ class ReportForm(FlaskForm):
     sportteam = StringField('Sport/Team', validators=[DataRequired()])
     details = TextAreaField('Details', validators=[DataRequired()])
     submit = SubmitField('Send')
+
+class RequestResetForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+    
+    def validate_email(self, email):
+        # queries database to check if there is already an email in the database
+        user = User.query.filter_by(email=email.data).first() 
+        if user is None: # checking to see if there is an email is there or not
+            # raises message requesting registration because there is no email with the account
+            raise ValidationError('There is no account with that email. You need to register first.')
+        
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('New Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password')
